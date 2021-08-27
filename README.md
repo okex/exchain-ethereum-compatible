@@ -1,4 +1,4 @@
-# exchain-evm-compatible
+# exchain-ethereum-compatible
 
 ## Background
 ExChain use a different method to calculate the hash value of a transaction. Instead of rlp encode and keccak256 in ethereum format, ExChain imports a new object encoding specification, called [go-amino](https://github.com/tendermint/go-amino), and performs the SHA256 algorithm on the amino-encoded data to calculate the real hash.

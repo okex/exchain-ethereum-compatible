@@ -11,7 +11,7 @@ To be compatible with hash between ethereum and exchain, and make less effort to
 ### usage
 go.mod in your project
 ```go
-require github.com/okex/exchain-ethereum-compatible v1.0.0
+require github.com/okex/exchain-ethereum-compatible v1.0.1
 ```
 
 Instead of signtx.Hash(), using utils.Hash(signtx)

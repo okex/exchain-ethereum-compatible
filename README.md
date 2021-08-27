@@ -3,7 +3,7 @@
 ## Background
 ExChain use a different method to calculate the hash value of a transaction. Instead of rlp encode and keccak256 in ethereum format, ExChain imports a new object encoding specification, called [go-amino](https://github.com/tendermint/go-amino), and performs the SHA256 algorithm on the amino-encoded data to calculate the real hash.
 
-Because of [exchain](github.com/okex/exchain) importing an outdated go-ethereum, some projects relying on a higher version of go-ethereum might encounter problems of dependencies corrupting in go module
+Because of [exchain](github.com/okex/exchain) importing an outdated go-ethereum, some projects relying on a higher version of go-ethereum who want to integrate encoded functions might encounter problems of dependencies corrupting in go module
 
 ## Solution
 To be compatible with hash between ethereum and exchain, and make less effort to migrate the project from ethereum to exchain, this package is used for calculate the real hash of an evm transaction.

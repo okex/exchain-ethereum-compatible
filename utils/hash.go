@@ -10,7 +10,7 @@ import (
 	"github.com/okex/exchain-ethereum-compatible/internal"
 )
 
-func Hash(signtx types.Transaction) (common.Hash, error) {
+func Hash(signtx *types.Transaction) (common.Hash, error) {
 	if signtx.Type() != types.LegacyTxType {
 		return common.Hash{}, errors.New("only supported eip-155 legacy transaction")
 	}

@@ -19,7 +19,7 @@ Instead of signtx.Hash(), using utils.Hash(signtx)
 ```go
 import (
     "github.com/ethereum/go-ethereum/core/types"
-    "github.com/okex/exchain_ethereum_compatible/utils"
+    "github.com/okex/exchain-ethereum-compatible/utils"
 )
 
 func Test() {

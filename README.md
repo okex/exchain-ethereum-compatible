@@ -32,7 +32,7 @@ func Test() {
     
     // signedTx.Hash() works on ethereum, but not on ExChain
     // So try to use utils.Hash(xxx)
-    hash := utils.Hash(signedTx)
+    hash, _ := utils.Hash(signedTx)
     fmt.Println(hash.ToString())
 }
 

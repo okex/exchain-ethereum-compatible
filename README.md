@@ -1,1 +1,39 @@
 # exchain-evm-compatible
+
+## Background
+ExChain use a different method to calculate the hash value of a transaction. Instead of rlp encode and keccak256 in ethereum format, ExChain imports a new object encoding specification, called [go-amino](https://github.com/tendermint/go-amino), and performs the SHA256 algorithm on the amino-encoded data to calculate the real hash.
+
+Because of [exchain](github.com/okex/exchain) importing an outdated go-ethereum, some projects relying on a higher version of go-ethereum might encounter problems of dependencies corrupting in go module
+
+## Solution
+To be compatible with hash between ethereum and exchain, and make less effort to migrate the project from ethereum to exchain, this package is used for calculate the real hash of an evm transaction.
+
+### usage
+go.mod in your project
+```go
+require github.com/okex/exchain-ethereum-compatible v1.0.0
+```
+
+Instead of signtx.Hash(), using utils.Hash(signtx)
+
+```go
+import (
+    "github.com/ethereum/go-ethereum/core/types"
+    "github.com/okex/exchain_ethereum_compatible/utils"
+)
+
+func Test() {
+   //...
+	
+    unsignedTx := types.NewTransaction(	nonce, common.HexToAddress("0x79BE5cc37B7e17594028BbF5d43875FDbed417da"), big.NewInt(1e18), uint64(3000000), gasPrice, nil);
+    signedTx, err := types.SignTx(unsignedTx, types.NewLondonSigner(chainID), privateKey)
+
+    //...
+    
+    // signedTx.Hash() works on ethereum, but not on ExChain
+    // So try to use utils.Hash(xxx)
+    hash := utils.Hash(signedTx)
+    fmt.Println(hash.ToString())
+}
+
+```

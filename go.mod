@@ -1,4 +1,4 @@
-module exchain_ethereum_compatible
+module github.com/okex/exchain_ethereum_compatible
 
 go 1.14
 

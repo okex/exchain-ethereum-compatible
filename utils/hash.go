@@ -5,9 +5,9 @@ import (
 	"errors"
 	"fmt"
 
-	"exchain_ethereum_compatible/internal"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/okex/exchain_ethereum_compatible/internal"
 )
 
 func Hash(signtx types.Transaction) (common.Hash, error) {

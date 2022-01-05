@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"errors"
 	"fmt"
+	"github.com/ethereum/go-ethereum/rlp"
 	"golang.org/x/crypto/sha3"
 	"hash"
 	"sync"
@@ -14,14 +15,17 @@ import (
 )
 
 func LegacyHash(signtx *types.Transaction) (common.Hash, error) {
-	return txhash(signtx, cmHash)
+	return txhash(signtx, sha256Hash, aminoEncode)
 }
 
 func Hash(signtx *types.Transaction) (common.Hash, error) {
-	return txhash(signtx, ethHash)
+	return txhash(signtx, keccak256Hash, rlpEncode)
 }
 
-func txhash(signtx *types.Transaction, hash func(data []byte)common.Hash) (common.Hash, error) {
+func txhash(signtx *types.Transaction,
+	hash func(data []byte)common.Hash,
+	encode func(*internal.MsgEthereumTx) ([]byte, error),
+) (common.Hash, error) {
 	if signtx.Type() != types.LegacyTxType {
 		return common.Hash{}, errors.New("only supported eip-155 legacy transaction")
 	}
@@ -39,7 +43,7 @@ func txhash(signtx *types.Transaction, hash func(data []byte)common.Hash) (commo
 		s,
 	)
 
-	bins, err := marshal(msg)
+	bins, err := encode(&msg)
 	if err != nil {
 		return common.Hash{}, errors.New(fmt.Sprintf("failed to marshal msg: %v", err))
 	}
@@ -47,14 +51,23 @@ func txhash(signtx *types.Transaction, hash func(data []byte)common.Hash) (commo
 	return hash(bins), nil
 }
 
-func cmHash(data []byte) common.Hash {
+func sha256Hash(data []byte) common.Hash {
 	hash := sha256.Sum256(data)
 	return common.BytesToHash(hash[:])
 }
 
-func ethHash(data []byte) common.Hash {
+func keccak256Hash(data []byte) common.Hash {
 	hash := sum(data)
 	return common.BytesToHash(hash[:])
+}
+
+func rlpEncode(msg *internal.MsgEthereumTx) ([]byte, error) {
+	return rlp.EncodeToBytes(msg)
+}
+
+func aminoEncode(msg *internal.MsgEthereumTx) ([]byte, error) {
+	cdc := internal.GetModuleCdc()
+	return cdc.MarshalBinaryLengthPrefixed(msg)
 }
 
 var keccakPool = sync.Pool{
@@ -74,10 +87,4 @@ func sum(bz []byte) []byte {
 	sha.Reset()
 	sha.Write(bz)
 	return sha.Sum(nil)
-}
-
-
-func marshal(msg internal.MsgEthereumTx) ([]byte, error) {
-	cdc := internal.GetModuleCdc()
-	return cdc.MarshalBinaryLengthPrefixed(msg)
 }

@@ -42,7 +42,6 @@ func txhash(signtx *types.Transaction,
 		r,
 		s,
 	)
-	fmt.Println("NewMsgEthereumTx:", msg)
 
 	bins, err := encode(&msg)
 	if err != nil {
@@ -63,7 +62,6 @@ func keccak256Hash(data []byte) common.Hash {
 }
 
 func rlpEncode(msg *internal.MsgEthereumTx) ([]byte, error) {
-	// 直接 rlp.EncodeToBytes(msg) 会多三个字节的前缀，具体原理待补充
 	return rlp.EncodeToBytes(&msg.Data)
 }
 

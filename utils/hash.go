@@ -23,7 +23,7 @@ func Hash(signtx *types.Transaction) (common.Hash, error) {
 }
 
 func txhash(signtx *types.Transaction,
-	hash func(data []byte)common.Hash,
+	hash func(data []byte) common.Hash,
 	encode func(*internal.MsgEthereumTx) ([]byte, error),
 ) (common.Hash, error) {
 	if signtx.Type() != types.LegacyTxType {
@@ -42,6 +42,7 @@ func txhash(signtx *types.Transaction,
 		r,
 		s,
 	)
+	fmt.Println("NewMsgEthereumTx:", msg)
 
 	bins, err := encode(&msg)
 	if err != nil {
@@ -62,7 +63,8 @@ func keccak256Hash(data []byte) common.Hash {
 }
 
 func rlpEncode(msg *internal.MsgEthereumTx) ([]byte, error) {
-	return rlp.EncodeToBytes(msg)
+	// 直接 rlp.EncodeToBytes(msg) 会多三个字节的前缀，具体原理待补充
+	return rlp.EncodeToBytes(&msg.Data)
 }
 
 func aminoEncode(msg *internal.MsgEthereumTx) ([]byte, error) {
